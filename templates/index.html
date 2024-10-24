@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>VideoMind AI - Smart Video Summarizer</title>
+      <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+      <link rel="icon" type="image/png" href="{{ url_for('static', filename='Images/Logo1.png') }}" style="border-radius: 50px;">
+  </head>
+<body class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-black/30 backdrop-blur-md border-b border-gray-700">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="{{ url_for('static', filename='Images/Logo1.png') }}" alt="VideoMind AI" class="h-10 w-10" style="border-radius: 50px;">
+                    <span
+                        class="text-2xl font-bold bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text">VideoMind
+                        AI</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-gray-300 hover:text-white transition">Features</a>
+                    <a href="#how-it-works" class="text-gray-300 hover:text-white transition">How it Works</a>
+                    <a href="#about" class="text-gray-300 hover:text-white transition">About</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container mx-auto px-6 py-16">
+        <div class="text-center mb-16">
+            <h1 class="text-5xl font-bold text-white mb-6">
+                Transform Video Content Into
+                <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text">Intelligent
+                    Insights</span>
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto">Powered by Advanced AI to deliver comprehensive video
+                summaries in seconds</p>
+        </div>
+          <!-- Input Card -->
+          <div class="max-w-3xl mx-auto">
+              <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-gray-700">
+                  <div class="space-y-6">
+                      <div class="relative">
+                          <input type="text" 
+                               id="youtube-url" 
+                               class="w-full bg-gray-800 text-gray-100 px-6 py-4 rounded-xl border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 transition placeholder-gray-400"
+                               placeholder="Paste YouTube URL here...">
+                          <div class="absolute right-4 top-4 text-gray-400">
+                              <i class="fab fa-youtube text-2xl"></i>
+                          </div>
+                      </div>
+                      <button onclick="summarizeVideo()"
+                          class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-4 rounded-xl font-semibold transition transform hover:scale-105">
+                          <i class="fas fa-magic mr-2"></i>Generate Summary
+                      </button>
+                  </div>
+              </div>
+          </div>
+
+          <!-- Loading Animation -->
+          <div id="loading" class="hidden">
+              <div class="flex flex-col items-center justify-center mt-12">
+                  <div class="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-indigo-500"></div>
+                  <p class="text-gray-300 mt-4">Processing video content...</p>
+              </div>
+          </div>
+
+          <!-- Results Section -->
+          <div id="results" class="hidden mt-12">
+              <div class="bg-gray-800/80 backdrop-blur-lg rounded-2xl p-8 shadow-2xl border border-gray-700 max-w-4xl mx-auto">
+                  <div id="summary-content" class="prose max-w-none">
+                      
+                  </div>
+              </div>
+          </div>
+      </div>
+
+    <!-- Features Section -->
+    <section id="features" class="container mx-auto px-6 py-16">
+        <h2 class="text-4xl font-bold text-center text-white mb-12">
+            Powerful <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text">Features</span>
+        </h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 transform hover:scale-105 transition">
+                <i class="fas fa-brain text-4xl text-indigo-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white mb-3">AI-Powered Analysis</h3>
+                <p class="text-gray-300">Advanced algorithms extract key insights and main concepts from any video content</p>
+            </div>
+            <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 transform hover:scale-105 transition">
+                <i class="fas fa-bolt text-4xl text-purple-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white mb-3">Instant Results</h3>
+                <p class="text-gray-300">Get comprehensive summaries within seconds, saving hours of video watching time</p>
+            </div>
+            <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 transform hover:scale-105 transition">
+                <i class="fas fa-chart-line text-4xl text-indigo-500 mb-4"></i>
+                <h3 class="text-xl font-bold text-white mb-3">Smart Insights</h3>
+                <p class="text-gray-300">Structured summaries with key points, takeaways, and practical applications</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="how-it-works" class="bg-gray-900/50 py-16">
+        <div class="container mx-auto px-6">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">
+                How It <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text">Works</span>
+            </h2>
+            <div class="grid md:grid-cols-4 gap-8 text-center">
+                <div class="relative">
+                    <div class="bg-white/5 backdrop-blur-lg rounded-full p-6 w-20 h-20 mx-auto mb-4">
+                        <i class="fas fa-link text-2xl text-indigo-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">1. Paste URL</h3>
+                    <p class="text-gray-300">Insert any YouTube video link</p>
+                </div>
+                <div class="relative">
+                    <div class="bg-white/5 backdrop-blur-lg rounded-full p-6 w-20 h-20 mx-auto mb-4">
+                        <i class="fas fa-magic text-2xl text-purple-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">2. Process</h3>
+                    <p class="text-gray-300">AI analyzes video content</p>
+                </div>
+                <div class="relative">
+                    <div class="bg-white/5 backdrop-blur-lg rounded-full p-6 w-20 h-20 mx-auto mb-4">
+                        <i class="fas fa-lightbulb text-2xl text-indigo-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">3. Generate</h3>
+                    <p class="text-gray-300">Creates detailed summary</p>
+                </div>
+                <div class="relative">
+                    <div class="bg-white/5 backdrop-blur-lg rounded-full p-6 w-20 h-20 mx-auto mb-4">
+                        <i class="fas fa-check-circle text-2xl text-purple-500"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">4. Review</h3>
+                    <p class="text-gray-300">Get structured insights</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="container mx-auto px-6 py-16">
+        <h2 class="text-4xl font-bold text-center text-white mb-12">
+            About <span class="bg-gradient-to-r from-indigo-500 to-purple-500 text-transparent bg-clip-text">VideoMind AI</span>
+        </h2>
+        <div class="bg-white/5 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 max-w-3xl mx-auto">
+            <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                VideoMind AI transforms how we consume video content. Our advanced AI technology makes learning and research more efficient by providing comprehensive summaries of any YouTube video.
+            </p>
+            <p class="text-gray-300 text-lg leading-relaxed mb-6">
+                Perfect for students, professionals, researchers, and anyone looking to extract key insights quickly from video content.
+            </p>
+            
+        </div>
+    </section>        <script>
+            function displaySummary(summary) {
+                const summaryContent = document.getElementById('summary-content');
+                // Convert markdown to HTML with proper styling
+                const formattedSummary = marked(summary, {
+                    headerIds: false,
+                    gfm: true
+                });
+                
+                summaryContent.innerHTML = formattedSummary;
+            }
+
+            function summarizeVideo() {
+                const url = document.getElementById('youtube-url').value;
+                const loading = document.getElementById('loading');
+                const results = document.getElementById('results');
+                const summaryContent = document.getElementById('summary-content');
+
+                // Show loading, hide results
+                loading.classList.remove('hidden');
+                results.classList.add('hidden');
+
+                axios.post('/summarize', { url: url })
+                    .then(response => {
+                        console.log('Response received:', response.data);
+                        
+                        // Format and display the summary
+                        summaryContent.innerHTML = marked.parse(response.data.summary);
+                        
+                        // Hide loading, show results
+                        loading.classList.add('hidden');
+                        results.classList.remove('hidden');
+                        
+                        // Scroll to results
+                        results.scrollIntoView({ behavior: 'smooth' });
+                    })
+                    .catch(error => {
+                        console.error('API Error:', error);
+                        loading.classList.add('hidden');
+                        alert('Please try again with a different video URL');
+                    });
+            }
+            function showMessage(message, type) {
+                const messageDiv = document.getElementById('message');
+                messageDiv.textContent = message;
+                messageDiv.className = `p-4 rounded-lg mb-4 ${
+                    type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`;
+                messageDiv.classList.remove('hidden');
+            }
+      </script>
+  </body>
+
+<style>
+    
+    /* Update prose styles for better visibility */
+/* Update prose styles for centered content and distinct headers */
+        .prose {
+        max-width: 65ch;
+        line-height: 1.6;
+        color: #ffffff;
+        margin: 0 auto; /* Center the content */
+        text-align: center; /* Center text alignment */
+        }
+
+        .prose h1, .prose h2, .prose h3 {
+        color: #818cf8;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+        font-size: 1.875rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        }
+
+        .prose p {
+        color: #ffffff;
+        margin-bottom: 1em;
+        line-height: 1.625;
+        font-size: 1.125rem;
+        font-weight: normal;
+        text-align: left; /* Keep paragraph text left-aligned for readability */
+        }
+
+        .prose ul {
+        color: #ffffff;
+        list-style-type: disc;
+        padding-left: 1.5em;
+        text-align: left;
+        margin: 1em auto;
+        }
+
+        .prose strong {
+        font-weight: 600;
+        color: #ffffff;
+        }
+
+</style>
+<footer class="bg-gray-800 text-white py-8 mt-16">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+            <!-- Profile Section -->
+            <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                <img src="{{ url_for('static', filename='images/SandeepGudisa.jpg') }}" 
+                     alt="Sandeep Gudisa" 
+                     class="w-16 h-16 rounded-full border-2 border-indigo-500">
+                <div>
+                    <h3 class="text-xl font-bold">Sandeep Gudisa</h3>
+                    <p class="text-gray-400">AI & ML Engineer</p>
+                </div>
+            </div>
+            
+            <!-- Social Links -->
+            <div class="flex space-x-6">
+                <a href="https://github.com/GudisaSandeep" 
+                   class="hover:text-indigo-400 transition-colors"
+                   target="_blank">
+                    <i class="fab fa-github text-2xl"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/sandeep-gudisa/" 
+                   class="hover:text-indigo-400 transition-colors"
+                   target="_blank">
+                    <i class="fab fa-linkedin text-2xl"></i>
+                </a>
+                <a href="https://www.youtube.com/@AIProgrammingTelugu/featured" 
+                   class="hover:text-indigo-400 transition-colors"
+                   target="_blank">
+                    <i class="fab fa-youtube text-2xl"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Additional Info -->
+        <div class="mt-6 text-center md:text-left">
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-lg font-semibold mb-2">About Me</h4>
+                    <p class="text-gray-400">Passionate AI engineer specializing in machine learning and video analysis. Creator of AI Programming Telugu YouTube channel.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-2">Contact</h4>
+                    <p class="text-gray-400">
+                        <i class="fas fa-envelope mr-2"></i> gudisasandeep141312@gmail.com<br>
+                        <i class="fas fa-map-marker-alt mr-2"></i> Vijayawada, India
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Copyright -->
+        <div class="mt-8 text-center text-gray-400 text-sm">
+            <p>© 2024 Sandeep Gudisa. All rights reserved.</p>
+        </div>
+    </div>
+
+</footer>
+</html>
+
+
+<!-- Add this right after your input section -->
