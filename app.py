@@ -1,4 +1,5 @@
-from flask import Flask, render_template, request, jsonify, logging
+from flask import Flask, render_template, request, jsonify
+import logging  # Import the standard logging module
 import google.generativeai as genai
 from youtube_transcript_api import YouTubeTranscriptApi
 import os
@@ -10,8 +11,8 @@ import traceback
 
 app = Flask(__name__)
 
-# Configure logging
-app.logger.setLevel(logging.DEBUG)
+# Configure logging correctly
+app.logger.setLevel(logging.DEBUG)  # Now using the correct logging.DEBUG
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.DEBUG)
 formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -150,4 +151,4 @@ def home():
 
 if __name__ == '__main__':
     # Add production-ready server configuration
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
