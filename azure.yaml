@@ -1,0 +1,12 @@
+# azure.yaml
+name: youtube-summarizer
+services:
+  - name: web
+    project: .
+    language: python
+    host: webapp
+    env:
+      - name: WEBSITES_PORT
+        value: 8000
+      - name: SCM_DO_BUILD_DURING_DEPLOYMENT
+        value: true
