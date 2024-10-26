@@ -21,7 +21,7 @@ app.logger.addHandler(handler)
 
 # Load environment variables with error handling
 load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = "AIzaSyAMYpivJ4uwYaQdbPoRCPy-qXqAf0G8w1A"
 if not GEMINI_API_KEY:
     app.logger.error("GEMINI_API_KEY not found in environment variables")
     raise ValueError("GEMINI_API_KEY is required")
